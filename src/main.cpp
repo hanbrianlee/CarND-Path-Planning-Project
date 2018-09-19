@@ -277,10 +277,12 @@ int main() {
           	    car_s = end_path_s;
             }
 
+            /********assign lanes to all the cars detected********/
+
             //extracting actors in my scene from here
             struct car {
           	    double vel;
-          	    double s;
+          	    double s; //difference of s between the detected car and me
           	};
 
           	vector<car> cars_left;
@@ -301,23 +303,24 @@ int main() {
                 double check_s = sensor_fusion[i][5];
 
                 check_s += ((double)prev_size*0.02*check_vel); //predict where the car will be, as the previous points are being used still.
-                if((fabs(check_s - car_s) < CARS_OF_CONCERN_DISTANCE)) //only concern the cars that are close to me
+                double s_difference = check_s - car_s;
+                if((fabs(s_difference) < CARS_OF_CONCERN_DISTANCE)) //only concern the cars that are close to me
                 {
                     if (d < (4 * lane) && d > (4 * lane - 4)) //if the car is within my lane.. lane = 1~3
                     {
-                        cars_mylane.push_back({check_vel, check_s});
+                        cars_mylane.push_back({check_vel, s_difference});
                     } else if ((d < (4 * lane) - 4) && (d > (4 * lane - 4 - 4)) &&
                                (lane > 1)) //if car is on my left lane
                     {
-                        cars_left.push_back({check_vel, check_s});
+                        cars_left.push_back({check_vel, s_difference});
                     } else if ((d < (4 * lane) + 4) && (d > (4 * lane - 4 + 4)) &&
                                (lane < 3)) //if car is on my right lane
                     {
-                        cars_right.push_back({check_vel, check_s});
+                        cars_right.push_back({check_vel, s_difference});
                     }
                 }
             }
-
+            /*************************END*******************/
             //try printing all the cars identified
 //            for(int i = 0; i < cars.size(); i++)
 //            {
@@ -330,103 +333,90 @@ int main() {
 //
 //            }
 
+            /********extract gaps, front and rear car speeds*******/
+            //sort the data in each lane.
+            //for each of the cars, check if the car is in front of me, if it is, then store it in respective front_car_distance and front_car_speed, and break
+            //store the first behind car in each lane.
+            //gap will be the smallest absolute distance in the list of cars compared to my s position.
 
-
-          	/********PERFORM GAP CHECKS *************/
-            //for my lane
-            double gap_mylane = 0.0; //initialize the gap as 0.0
+            /******* for the cars in my lane ************/
+            double gap_mylane = ALLOWED_DISTANCE; //initialize the gap
             double front_car_speed = INITIAL_DESIRED_VELOCITY; //initialize to desired velocity 49.5
-            if(cars_mylane.size() >= 2) //if more than or equal to 2 car are there
+
+            sort( cars_mylane.begin(), cars_mylane.end(), [](const car& p1, const car& p2){ return p1.s < p2.s; } //sort the data
+            );
+            //std::cout << "car1 distance: " << cars_mylane[0].s << ", car1 speed: " << cars_mylane[0].vel << ", car2 distance" << cars_mylane[1].s << ", car2 speed: " << cars_mylane[1].vel << endl;
+
+            for(int i = 0; i < cars_mylane.size(); i++)
             {
-                //std:: cout << "more than two cars! ";
-                vector<double> s;
-                //get the closest max 2 vehicles on the right side
-                for(int i = 0; i < cars_mylane.size(); i++)
+                if(cars_mylane[i].s >= 0) //check if the car is in front of me
                 {
-                    s.push_back(fabs(cars_mylane[i].s - car_s));
+                    front_car_speed = cars_mylane[i].vel; //find the first car in front of me and break
+                    gap_mylane = cars_mylane[i].s;
+                    break;
                 }
-                sort(s.begin(), s.end());
-                gap_mylane = s[0];
-
-                /********FIND the distance to the first car in front of me********/
-                sort( cars_mylane.begin(), cars_mylane.end(),
-                      [](const car& p1, const car& p2){ return p1.s < p2.s; }
-                );
-                std::cout << "car1 distance: " << cars_mylane[0].s << ", car1 speed: " << cars_mylane[0].vel << ", car2 distance" << cars_mylane[1].s << ", car2 speed: " << cars_mylane[1].vel << endl;
-                front_car_speed = cars_mylane[0].vel;
-                //std::cout << "end";
-
             }
-            else if(cars_mylane.size() == 1)
-            {
-                gap_mylane = fabs(car_s - cars_mylane[0].s);
-                front_car_speed = cars_mylane[0].vel;
-            }
-            else //if there's no car
-            {
-                gap_mylane = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
-                //std::cout << gap_right << endl;
-            }
+            //std::cout << "front_car distance: " << gap_mylane << ", front_car speed: " << front_car_speed << endl;
 
-            //for the right side
-            double gap_right = 0.0; //initialize the gap as 0.0
-            if(cars_right.size() >= 2) //if more than or equal to 2 cars are there
+            /******* for the cars in my right lane ************/
+            double gap_right = SAFE_GAP_TO_CL; //initialize the gap
+            double right_front_car_speed = INITIAL_DESIRED_VELOCITY; //initialize
+            double right_behind_car_speed = 0; //initialize
+
+
+            sort( cars_right.begin(), cars_right.end(), [](const car& p1, const car& p2){ return p1.s < p2.s; } //sort the data
+            );
+            //std::cout << "car1 distance: " << cars_mylane[0].s << ", car1 speed: " << cars_mylane[0].vel << ", car2 distance" << cars_mylane[1].s << ", car2 speed: " << cars_mylane[1].vel << endl;
+
+            for(int i = 0; i < cars_right.size(); i++)
             {
-                //std:: cout << "more than two cars! ";
-                vector<double> s;
-                //get the closest max 2 vehicles on the right side
-                for(int i = 0; i < cars_right.size(); i++)
+                if(fabs(cars_right[i].s) < gap_right)
                 {
-                    s.push_back(fabs(cars_right[i].s - car_s));
+                    gap_right = fabs(cars_right[i].s);
                 }
-                sort(s.begin(), s.end());
-                gap_right = s[0];
-            }
-            else if(cars_right.size() == 1)
-            {
-                gap_right = fabs(car_s - cars_right[0].s);
-            }
-            else //if there's no car
-            {
-                gap_right = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
-                //std::cout << gap_right << endl;
-            }
-
-            //for the left side
-            double gap_left = 0.0; //initialize the gap as 0.0
-            if(cars_left.size() >= 2) //if more than or equal to 2 cars are there
-            {
-                //std:: cout << "more than two cars! ";
-                vector<double> s;
-                //get the closest max 2 vehicles on the right side
-                for(int i = 0; i < cars_left.size(); i++)
+                if(cars_right[i].s >= 0) //check if the car is in front of me
                 {
-                    s.push_back(fabs(cars_left[i].s - car_s));
+                    right_front_car_speed = cars_right[i].vel; //find the first car in front of me and break
+                    break;
                 }
-                sort(s.begin(), s.end());
-                gap_left = s[0];
+                right_behind_car_speed = cars_right[i].vel; //we are going in order, so this will not run if the first front car is detected in the above logic with break
             }
-            else if(cars_left.size() == 1)
-            {
-                gap_left = fabs(car_s - cars_left[0].s);
-            }
-            else //if there's no car
-            {
-                gap_left = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
-                //std::cout << gap_left << endl;
-            }
+            //std::cout << "right_lane gap distance: " << gap_right << ", right_front_car speed: " << right_front_car_speed << ", right_behind_car speed: " << right_behind_car_speed << endl;
 
-            //std::cout << "gap_left: " << gap_left << ", gap_right: " << gap_right << endl;
-            /**************** PERFORM GAP CHECKS END **********************/
+            /******* for the cars in my left lane ************/
+            double gap_left = SAFE_GAP_TO_CL; //initialize the gap
+            double left_front_car_speed = INITIAL_DESIRED_VELOCITY; //initialize
+            double left_behind_car_speed = 0; //initialize
 
-            //path planning and state machine starts here
+            sort( cars_left.begin(), cars_left.end(), [](const car& p1, const car& p2){ return p1.s < p2.s; } //sort the data
+            );
+            //std::cout << "car1 distance: " << cars_mylane[0].s << ", car1 speed: " << cars_mylane[0].vel << ", car2 distance" << cars_mylane[1].s << ", car2 speed: " << cars_mylane[1].vel << endl;
+
+            for(int i = 0; i < cars_left.size(); i++)
+            {
+                if(fabs(cars_left[i].s) < gap_left)
+                {
+                    gap_left = fabs(cars_left[i].s);
+                }
+                if(cars_left[i].s >= 0) //check if the car is in front of me
+                {
+                    left_front_car_speed = cars_left[i].vel; //find the first car in front of me and break
+                    break;
+                }
+                left_behind_car_speed = cars_left[i].vel; //we are going in order, so this will not run if the first front car is detected in the above logic with break
+            }
+            //std::cout << "left_lane gap distance: " << gap_left << ", left_front_car speed: " << left_front_car_speed << ", left_behind_car speed: " << left_behind_car_speed << endl;
+            /*************************END*******************/
+
+
+            /*************path planning and state machine starts here************/
             if (fsm == KL)
             {
                 std::cout << "let's do Keep Lane!!" << endl;
                 //for all the cars of concern in front of us, if there is a car that is less than ALLOWED_DISTANCE from me and the speed is less than or equal to mine, then consider lane change
                 for(int i = 0; i < cars_mylane.size(); i++)
                 {
-                    if((cars_mylane[i].s > car_s) && ((cars_mylane[i].s - car_s) < ALLOWED_DISTANCE) && (cars_mylane[i].vel <= (desired_vel - 5))) //-5 as a buffer
+                    if((cars_mylane[i].s > 0) && (cars_mylane[i].s < ALLOWED_DISTANCE) && (cars_mylane[i].vel <= (desired_vel - 5))) //-5 as a buffer
                     {
                         //consider lane change, so either PLCL or PLCR
                         //for PLCL: if the predicted gap on the left lane is okay AND if the predicted distance to car closest to me on the left lane is less than that to the right
@@ -464,7 +454,7 @@ int main() {
                 std::cout << "let's do PLCL!! <--- left" << endl;
 
 
-                if(gap_left > SAFE_GAP_TO_CL) //condition to transition to LCL state
+                if((gap_left >= SAFE_GAP_TO_CL) && (car_speed >= left_behind_car_speed) && (car_speed <= left_front_car_speed)) //condition to transition to LCL state, don't do lane change if my speed is not at least the closest behind car in the lane i'm planning to go into, AND front car in that lane is as fast as me
                 {
                     fsm = LCL; //if there's enough gap on the right lane, perform LCR!
                 }
@@ -484,7 +474,7 @@ int main() {
                 if(car_speed > front_car_speed*0.9) //10% speed buffer
                 {
                     ref_vel -= VEL_INC; //approximately 5m/s^2
-                    std::cout << "ref_vel: " << ref_vel*2.24 << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
+                    //std::cout << "ref_vel: " << ref_vel << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
                 }
             }
             else if (fsm == PLCR)
@@ -492,9 +482,9 @@ int main() {
                 std::cout << "let's do PLCR ---> right" << endl;
                 //ref_vel -= VEL_INC; //approximately 5m/s^2
 
-                if(gap_right > SAFE_GAP_TO_CL) //condition to transition to LCR state, try.. only change lane if there's no car of concern!
+                if((gap_right >= SAFE_GAP_TO_CL) && (car_speed >= right_behind_car_speed) && (car_speed <= right_front_car_speed)) //condition to transition to LCR state, don't do lane change if my speed is not at least the closest behind car in the lane i'm planning to go into, AND front car in that lane is as fast as me
                 {
-                    fsm = LCR; //if there's enough gap on the right lane, perform LCR!
+                    fsm = LCR; //if there's enough gap on the right lane, perform LCR! TODO: don't do lane change if my speed is not at least the closest behind car in the lane i'm planning to go into
                 }
 
                 //go back to KL state if the following conditions are met:
@@ -512,10 +502,10 @@ int main() {
                 if(car_speed > front_car_speed*0.9) //10% speed buffer
                 {
                     ref_vel -= VEL_INC; //approximately 5m/s^2
-                    std::cout << "ref_vel: " << ref_vel*2.24 << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
+                    //std::cout << "ref_vel: " << ref_vel << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
                 }
             }
-            //#TODO: Make in-transition flags so that in the midst of lane change, another Lane change cannot happen, if this ahppens, then the car can oscillate between two lanes and stay somewhere in the middle, not desired
+
             else if (fsm == LCR)
             {
                 std::cout << "let's do LCR ---> right NOW!!" << endl;
@@ -527,7 +517,6 @@ int main() {
                 }
 
                 //during lane change, press on the gas as usual, not exceeding the disired_vel of 49.5
-                /*TODO: must account for situations where there's a car going slow close to me in the lane i'm changing into, same for LCL case.**/
                 if(ref_vel < desired_vel) //desired_vel is dynamic based on FSM behaviour
                 {
                     ref_vel += VEL_INC; //approximately 5m/s^2
@@ -566,7 +555,7 @@ int main() {
                     transition = false;
                 }
             }
-
+            /**************************END*****************************/
 
 
 

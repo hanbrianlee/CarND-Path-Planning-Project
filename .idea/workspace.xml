@@ -28,15 +28,15 @@
     <session id="-330196555">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.3" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="cpp" value="2" />
+          <entry key="cpp" value="3" />
           <entry key="h" value="10" />
           <entry key="path_planning (disassembly)" value="24" />
         </counts>
@@ -46,12 +46,12 @@
           <entry key="C++" value="1" />
           <entry key="Disassembly" value="24" />
           <entry key="ObjectiveC" value="10" />
-          <entry key="Scratch" value="1" />
+          <entry key="Scratch" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="14524" />
+          <entry key="cpp" value="17052" />
           <entry key="txt" value="4" />
         </counts>
       </usages-collector>
@@ -59,7 +59,7 @@
         <counts>
           <entry key="C++" value="48" />
           <entry key="Doxygen file" value="3" />
-          <entry key="ObjectiveC" value="14473" />
+          <entry key="ObjectiveC" value="17001" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
@@ -70,11 +70,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="532" column="56" lean-forward="true" selection-start-line="532" selection-start-column="56" selection-end-line="532" selection-end-column="56" />
+            <state relative-caret-position="383">
+              <caret line="557" column="72" selection-start-line="557" selection-start-column="72" selection-end-line="557" selection-end-column="72" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="523">
+              <caret line="84" column="80" selection-start-line="84" selection-start-column="80" selection-end-line="84" selection-end-column="80" />
             </state>
           </provider>
         </entry>
@@ -89,15 +98,18 @@
       <find>lane</find>
       <find>vector</find>
       <find>_right</find>
-      <find>gap_mylane</find>
       <find>gap_left</find>
       <find>0.224</find>
-      <find>SAFE_GAP</find>
+      <find>gap_mylane</find>
+      <find>.s</find>
       <find>ref_vel</find>
+      <find>SAFE_GAP</find>
+      <find>right</find>
     </findStrings>
     <replaceStrings>
       <replace>_left</replace>
       <replace>VEL_INC</replace>
+      <replace>left</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -107,6 +119,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
@@ -118,10 +131,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="172" />
-    <option name="y" value="1074" />
-    <option name="width" value="1391" />
-    <option name="height" value="784" />
+    <option name="x" value="65" />
+    <option name="y" value="-4" />
+    <option name="width" value="1855" />
+    <option name="height" value="1084" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -164,7 +177,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.path_planning">
+  <component name="RunManager" selected="Application.Build All">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -190,7 +203,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1537210676797</updated>
-      <workItem from="1537213155682" duration="39106000" />
+      <workItem from="1537213155682" duration="46928000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1537210779175</created>
@@ -203,22 +216,19 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39106000" />
+    <option name="totallyTimeSpent" value="46928000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="896" width="1855" height="1084" extended-state="6" />
+    <frame x="242" y="-4" width="1855" height="1204" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.18905473" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" weight="0.3294979" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="CMake" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3294979" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39958158" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.3550186" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -226,10 +236,13 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="CMake" order="11" />
+      <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32899627" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
     </layout>
     <layout-to-restore>
       <window_info content_ui="combo" id="Project" order="0" weight="0.18905473" />
@@ -290,13 +303,7 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="27" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp" />
     <entry file="file:///usr/include/c++/7/bits/std_function.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
@@ -311,10 +318,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="523">
+          <caret line="84" column="80" selection-start-line="84" selection-start-column="80" selection-end-line="84" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="532" column="56" lean-forward="true" selection-start-line="532" selection-start-column="56" selection-end-line="532" selection-end-column="56" />
+        <state relative-caret-position="383">
+          <caret line="557" column="72" selection-start-line="557" selection-start-column="72" selection-end-line="557" selection-end-column="72" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

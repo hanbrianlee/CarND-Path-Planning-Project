@@ -23,10 +23,10 @@
 #define MY_LANE 2
 #define NONE 99
 #define CARS_OF_CONCERN_DISTANCE 50.0
-#define ALLOWED_DISTANCE 30.0
-#define SAFE_GAP_TO_CL 20.0
+#define ALLOWED_DISTANCE 25.0
+#define SAFE_GAP_TO_CL 10.0
 #define VEL_INC 0.4
-#define IN_LANE_TOLERANCE_D 0.5
+#define IN_LANE_TOLERANCE_D 0.9
 //testing git commit with pycharm
 
 using namespace std;
@@ -321,17 +321,7 @@ int main() {
                 }
             }
             /*************************END*******************/
-            //try printing all the cars identified
-//            for(int i = 0; i < cars.size(); i++)
-//            {
-//                //only print if the car right lane and is close to me
-//                if((cars[i].lane == RIGHT_LANE))
-//                {
-//                    std::cout << cars[i].vel*2.24 << endl;
-//                    //std::cout << "my speed: " << car_speed << endl;
-//                }
-//
-//            }
+
 
             /********extract gaps, front and rear car speeds*******/
             //sort the data in each lane.
@@ -556,33 +546,6 @@ int main() {
                 }
             }
             /**************************END*****************************/
-
-
-
-//
-//            for(int i = 0; i < cars_right.size(); i++)
-//            {
-//                //only print if the car right lane and is close to me
-//                if((cars_right[i].lane == RIGHT_LANE))
-//                {
-//                    std::cout << cars_right[i].vel*2.24 << endl;
-//                    //std::cout << "my speed: " << car_speed << endl;
-//                }
-//            }
-//            for(int i = 0; i < cars_right.size(); i++)
-//            {
-//                //only print if the car right lane and is close to me
-//                if((cars_right[i].lane == RIGHT_LANE))
-//                {
-//                    std::cout << cars_right[i].vel*2.24 << endl;
-//                    //std::cout << "my speed: " << car_speed << endl;
-//                }
-//            }
-//            for(int i = 0; i < cars_mylane.size(); i++)
-//            {
-//                std::cout << cars_mylane[i].vel*2.24 << endl;
-//            }
-
 
             //from here, the following code is for drawing trajectories
 

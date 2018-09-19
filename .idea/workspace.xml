@@ -38,28 +38,28 @@
         <counts>
           <entry key="cpp" value="3" />
           <entry key="h" value="10" />
-          <entry key="path_planning (disassembly)" value="24" />
+          <entry key="path_planning (disassembly)" value="25" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="C++" value="1" />
-          <entry key="Disassembly" value="24" />
+          <entry key="Disassembly" value="25" />
           <entry key="ObjectiveC" value="10" />
           <entry key="Scratch" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="17052" />
+          <entry key="cpp" value="17059" />
           <entry key="txt" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="C++" value="48" />
-          <entry key="Doxygen file" value="3" />
-          <entry key="ObjectiveC" value="17001" />
+          <entry key="Doxygen file" value="4" />
+          <entry key="ObjectiveC" value="17007" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
@@ -70,8 +70,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="557" column="72" selection-start-line="557" selection-start-column="72" selection-end-line="557" selection-end-column="72" />
+            <state relative-caret-position="284">
+              <caret line="715" column="57" lean-forward="true" selection-start-line="715" selection-start-column="57" selection-end-line="715" selection-end-column="57" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -103,13 +103,13 @@
       <find>gap_mylane</find>
       <find>.s</find>
       <find>ref_vel</find>
-      <find>SAFE_GAP</find>
       <find>right</find>
+      <find>SAFE_GAP</find>
     </findStrings>
     <replaceStrings>
       <replace>_left</replace>
-      <replace>VEL_INC</replace>
       <replace>left</replace>
+      <replace>VEL_INC</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -203,7 +203,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1537210676797</updated>
-      <workItem from="1537213155682" duration="46928000" />
+      <workItem from="1537213155682" duration="48869000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1537210779175</created>
@@ -216,10 +216,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46928000" />
+    <option name="totallyTimeSpent" value="48869000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="242" y="-4" width="1855" height="1204" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.18905473" />
@@ -228,7 +228,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3294979" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.3550186" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39958158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -238,7 +238,7 @@
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="CMake" order="11" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32899627" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32845187" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -327,8 +327,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="557" column="72" selection-start-line="557" selection-start-column="72" selection-end-line="557" selection-end-column="72" />
+        <state relative-caret-position="284">
+          <caret line="715" column="57" lean-forward="true" selection-start-line="715" selection-start-column="57" selection-end-line="715" selection-end-column="57" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

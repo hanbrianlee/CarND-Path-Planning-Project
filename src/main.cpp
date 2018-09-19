@@ -26,6 +26,7 @@
 #define ALLOWED_DISTANCE 30.0
 #define SAFE_GAP_TO_CL 20.0
 #define VEL_INC 0.4
+#define IN_LANE_TOLERANCE_D 0.5
 //testing git commit with pycharm
 
 using namespace std;
@@ -329,9 +330,12 @@ int main() {
 //
 //            }
 
+
+
           	/********PERFORM GAP CHECKS *************/
             //for my lane
             double gap_mylane = 0.0; //initialize the gap as 0.0
+            double front_car_speed = INITIAL_DESIRED_VELOCITY; //initialize to desired velocity 49.5
             if(cars_mylane.size() >= 2) //if more than or equal to 2 car are there
             {
                 //std:: cout << "more than two cars! ";
@@ -343,10 +347,20 @@ int main() {
                 }
                 sort(s.begin(), s.end());
                 gap_mylane = s[0];
+
+                /********FIND the distance to the first car in front of me********/
+                sort( cars_mylane.begin(), cars_mylane.end(),
+                      [](const car& p1, const car& p2){ return p1.s < p2.s; }
+                );
+                std::cout << "car1 distance: " << cars_mylane[0].s << ", car1 speed: " << cars_mylane[0].vel << ", car2 distance" << cars_mylane[1].s << ", car2 speed: " << cars_mylane[1].vel << endl;
+                front_car_speed = cars_mylane[0].vel;
+                //std::cout << "end";
+
             }
             else if(cars_mylane.size() == 1)
             {
                 gap_mylane = fabs(car_s - cars_mylane[0].s);
+                front_car_speed = cars_mylane[0].vel;
             }
             else //if there's no car
             {
@@ -444,37 +458,10 @@ int main() {
                 {
                     ref_vel += VEL_INC; //approximately 5m/s^2
                 }
-                //else do nothing and keep enjoying the straight driving, keeping ref_vel at the desired velocity
-
-//                //if it is, it's time to consider changing lanes
-//                if ((check_s > car_s) && ((check_s - car_s) < 30))
-//                {
-//                    //first consider changing to the left lane, if the left lane is considered more favorable by investigating the cars on the left and the right
-//                    if()
-//                    fsm = PLCL;
-//
-//                    //ref_vel = 29.5; //slow down to 29.5mph if there's a car in front of us near us.
-//                    too_close = true;
-//
-//
-//
-//
-//                    if (lane > 1) //if the car in front of us is not in the 1st lane, then move over to the 1st lane.
-//                    {
-//                        lane = 1;
-//                        //std::cout << "it got here!!" << endl;
-//                    }
-//                }
-
-//                if(too_close)
-//                {
-//                    ref_vel -= VEL_INC; //approximately 5m/s^2
-//                }
             }
             else if (fsm == PLCL)
             {
                 std::cout << "let's do PLCL!! <--- left" << endl;
-                ref_vel -= VEL_INC; //approximately 5m/s^2
 
 
                 if(gap_left > SAFE_GAP_TO_CL) //condition to transition to LCL state
@@ -492,20 +479,18 @@ int main() {
                     fsm = KL;
                 }
 
-                //fsm = PLCL;
-
-                //update finite state machine to PLCL or PLCR if there's a car in front of us that's going too slow
-                //if there's a car on the left side behind me that is slower or same as the the car in its front
-                //AND the gap has enough gap
-                //AND the car on the left side behind me has almost the same velocity as me, perform LCR
+                //if not the above condition, stay within this state, where you would keep looking for chances to lane change
+                //just keep slowing down until the gap_left gets big enough so it's safe to go into that lane, making sure your speed is at least the speed of the car in front
+                if(car_speed > front_car_speed*0.9) //10% speed buffer
+                {
+                    ref_vel -= VEL_INC; //approximately 5m/s^2
+                    std::cout << "ref_vel: " << ref_vel*2.24 << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
+                }
             }
             else if (fsm == PLCR)
             {
                 std::cout << "let's do PLCR ---> right" << endl;
                 //ref_vel -= VEL_INC; //approximately 5m/s^2
-
-                //just keep slowing down until the gap_right gets big enough so it's safe to go into that lane
-                ref_vel -= VEL_INC; //approximately 5m/s^2
 
                 if(gap_right > SAFE_GAP_TO_CL) //condition to transition to LCR state, try.. only change lane if there's no car of concern!
                 {
@@ -522,10 +507,13 @@ int main() {
                     fsm = KL;
                 }
 
-                //update finite state machine to PLCL or PLCR if there's a car in front of us that's going too slow
-                //if there's a car on the left side behind me that is slower or same as the the car in its front
-                //AND the gap has enough gap
-                //AND the car on the left side behind me has almost the same velocity as me, perform LCR
+                //if not the above condition, stay within this state, where you would keep looking for chances to lane change
+                //just keep slowing down until the gap_right gets big enough so it's safe to go into that lane, making sure your speed is at least the speed of the car in front
+                if(car_speed > front_car_speed*0.9) //10% speed buffer
+                {
+                    ref_vel -= VEL_INC; //approximately 5m/s^2
+                    std::cout << "ref_vel: " << ref_vel*2.24 << ", car_speed: " << car_speed << ", front_car_speed: " << front_car_speed << endl;
+                }
             }
             //#TODO: Make in-transition flags so that in the midst of lane change, another Lane change cannot happen, if this ahppens, then the car can oscillate between two lanes and stay somewhere in the middle, not desired
             else if (fsm == LCR)
@@ -538,11 +526,18 @@ int main() {
                     lane = lane + 1;
                 }
 
-                if(d says i'm in the lane fully,')
+                //during lane change, press on the gas as usual, not exceeding the disired_vel of 49.5
+                /*TODO: must account for situations where there's a car going slow close to me in the lane i'm changing into, same for LCL case.**/
+                if(ref_vel < desired_vel) //desired_vel is dynamic based on FSM behaviour
+                {
+                    ref_vel += VEL_INC; //approximately 5m/s^2
+                }
+
+                if(fabs(car_d - (-2 + 4*lane)) < IN_LANE_TOLERANCE_D)
                 {
                     //after completing lane change, go back to keep lane state
                     fsm = KL;
-                    //reset transition flag
+                    //reset transition flag, meaning completion of change lane
                     transition = false;
                 }
 
@@ -550,9 +545,26 @@ int main() {
             else if (fsm == LCL)
             {
                 std::cout << "let's do LCL <--- left NOW!!" << endl;
-                lane = lane - 1;
-                //after initiating/completing lane change, go back to keep lane state
-                fsm = KL;
+                //change lane to right
+                if(transition == false)
+                {
+                    transition = true;
+                    lane = lane - 1;
+                }
+
+                //during lane change, press on the gas as usual, not exceeding the disired_vel of 49.5
+                if(ref_vel < desired_vel) //desired_vel is dynamic based on FSM behaviour
+                {
+                    ref_vel += VEL_INC; //approximately 5m/s^2
+                }
+
+                if(fabs(car_d - (-2 + 4*lane)) < IN_LANE_TOLERANCE_D)
+                {
+                    //after completing lane change, go back to keep lane state
+                    fsm = KL;
+                    //reset transition flag, meaning completion of change lane
+                    transition = false;
+                }
             }
 
 

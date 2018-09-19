@@ -12,8 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f2d04fb-9a48-4e30-a08a-0ca1f856a788" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/path_planning.dir/src/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/path_planning.dir/src/main.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/path_planning" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/path_planning" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,28 +36,30 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="cpp" value="1" />
-          <entry key="h" value="6" />
-          <entry key="path_planning (disassembly)" value="18" />
+          <entry key="cpp" value="2" />
+          <entry key="h" value="7" />
+          <entry key="path_planning (disassembly)" value="22" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="C++" value="1" />
-          <entry key="Disassembly" value="18" />
-          <entry key="ObjectiveC" value="6" />
+          <entry key="Disassembly" value="22" />
+          <entry key="ObjectiveC" value="7" />
+          <entry key="Scratch" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="8145" />
+          <entry key="cpp" value="13223" />
           <entry key="txt" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="C++" value="48" />
-          <entry key="ObjectiveC" value="8097" />
+          <entry key="Doxygen file" value="2" />
+          <entry key="ObjectiveC" value="13173" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
@@ -67,8 +70,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="343" column="35" selection-start-line="343" selection-start-column="35" selection-end-line="343" selection-end-column="35" />
+            <state relative-caret-position="225">
+              <caret line="539" lean-forward="true" selection-start-line="539" selection-end-line="539" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -77,10 +80,37 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="mock:///path_planning (disassembly)">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/c++/7/bits/std_function.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="317">
+              <caret line="315" selection-start-line="315" selection-end-line="315" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret selection-end-line="27" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/spline.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="295" lean-forward="true" selection-start-line="295" selection-end-line="295" />
+            <state relative-caret-position="74">
+              <caret line="293" selection-start-line="293" selection-end-line="293" />
             </state>
           </provider>
         </entry>
@@ -95,7 +125,16 @@
       <find>ref_vel</find>
       <find>lane</find>
       <find>vector</find>
+      <find>_right</find>
+      <find>gap_mylane</find>
+      <find>gap_left</find>
+      <find>0.224</find>
+      <find>SAFE_GAP</find>
     </findStrings>
+    <replaceStrings>
+      <replace>_left</replace>
+      <replace>VEL_INC</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -103,6 +142,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
@@ -186,7 +226,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1537210676797</updated>
-      <workItem from="1537213155682" duration="23181000" />
+      <workItem from="1537213155682" duration="34769000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <created>1537210779175</created>
@@ -199,22 +239,22 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23181000" />
+    <option name="totallyTimeSpent" value="34769000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="896" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18905473" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.18905473" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Messages" visible="true" weight="0.3294979" />
+      <window_info anchor="bottom" id="Messages" weight="0.3294979" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="CMake" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3294979" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39958158" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39958158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -227,6 +267,29 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18905473" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="CMake" order="0" />
+      <window_info anchor="bottom" id="Database Changes" order="1" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Messages" order="2" visible="true" weight="0.3294979" />
+      <window_info anchor="bottom" id="Message" order="3" />
+      <window_info anchor="bottom" id="Find" order="4" />
+      <window_info anchor="bottom" id="Run" order="5" weight="0.3294979" />
+      <window_info anchor="bottom" id="Debug" order="6" weight="0.39958158" />
+      <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="9" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="13" />
+      <window_info anchor="right" id="Database" order="0" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -263,24 +326,31 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="27" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file:///usr/include/c++/7/bits/std_function.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
-          <caret line="319" lean-forward="true" selection-start-line="319" selection-end-line="319" />
+          <caret line="315" selection-start-line="315" selection-end-line="315" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/spline.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="295" lean-forward="true" selection-start-line="295" selection-end-line="295" />
+        <state relative-caret-position="74">
+          <caret line="293" selection-start-line="293" selection-end-line="293" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="343" column="35" selection-start-line="343" selection-start-column="35" selection-end-line="343" selection-end-column="35" />
+        <state relative-caret-position="225">
+          <caret line="539" lean-forward="true" selection-start-line="539" selection-end-line="539" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

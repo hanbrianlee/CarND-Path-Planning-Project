@@ -11,7 +11,7 @@
 #include "spline.h"
 
 
-#define DESIRED_VELOCITY 49.5 //mph
+#define INITIAL_DESIRED_VELOCITY 49.5 //mph
 //define finite state machine predefinitions
 #define KL 0 //keep lane
 #define PLCL 1 //plan lane change left
@@ -24,6 +24,8 @@
 #define NONE 99
 #define CARS_OF_CONCERN_DISTANCE 50.0
 #define ALLOWED_DISTANCE 30.0
+#define SAFE_GAP_TO_CL 20.0
+#define VEL_INC 0.4
 //testing git commit with pycharm
 
 using namespace std;
@@ -225,8 +227,12 @@ int main() {
 
   int fsm = KL;
 
+  double desired_vel = INITIAL_DESIRED_VELOCITY;
 
-  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy, &lane, &ref_vel, &fsm](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  bool transition = false;
+
+
+  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy, &lane, &ref_vel, &fsm, &desired_vel, &transition](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -274,7 +280,6 @@ int main() {
             struct car {
           	    double vel;
           	    double s;
-          	    int lane;
           	};
 
           	vector<car> cars_left;
@@ -299,15 +304,15 @@ int main() {
                 {
                     if (d < (4 * lane) && d > (4 * lane - 4)) //if the car is within my lane.. lane = 1~3
                     {
-                        cars_mylane.push_back({check_vel, check_s, MY_LANE});
+                        cars_mylane.push_back({check_vel, check_s});
                     } else if ((d < (4 * lane) - 4) && (d > (4 * lane - 4 - 4)) &&
                                (lane > 1)) //if car is on my left lane
                     {
-                        cars_left.push_back({check_vel, check_s, LEFT_LANE});
+                        cars_left.push_back({check_vel, check_s});
                     } else if ((d < (4 * lane) + 4) && (d > (4 * lane - 4 + 4)) &&
                                (lane < 3)) //if car is on my right lane
                     {
-                        cars_right.push_back({check_vel, check_s, RIGHT_LANE});
+                        cars_right.push_back({check_vel, check_s});
                     }
                 }
             }
@@ -323,28 +328,123 @@ int main() {
 //                }
 //
 //            }
-            std::cout << "-----------------------" << endl;
+
+          	/********PERFORM GAP CHECKS *************/
+            //for my lane
+            double gap_mylane = 0.0; //initialize the gap as 0.0
+            if(cars_mylane.size() >= 2) //if more than or equal to 2 car are there
+            {
+                //std:: cout << "more than two cars! ";
+                vector<double> s;
+                //get the closest max 2 vehicles on the right side
+                for(int i = 0; i < cars_mylane.size(); i++)
+                {
+                    s.push_back(fabs(cars_mylane[i].s - car_s));
+                }
+                sort(s.begin(), s.end());
+                gap_mylane = s[0];
+            }
+            else if(cars_mylane.size() == 1)
+            {
+                gap_mylane = fabs(car_s - cars_mylane[0].s);
+            }
+            else //if there's no car
+            {
+                gap_mylane = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
+                //std::cout << gap_right << endl;
+            }
+
+            //for the right side
+            double gap_right = 0.0; //initialize the gap as 0.0
+            if(cars_right.size() >= 2) //if more than or equal to 2 cars are there
+            {
+                //std:: cout << "more than two cars! ";
+                vector<double> s;
+                //get the closest max 2 vehicles on the right side
+                for(int i = 0; i < cars_right.size(); i++)
+                {
+                    s.push_back(fabs(cars_right[i].s - car_s));
+                }
+                sort(s.begin(), s.end());
+                gap_right = s[0];
+            }
+            else if(cars_right.size() == 1)
+            {
+                gap_right = fabs(car_s - cars_right[0].s);
+            }
+            else //if there's no car
+            {
+                gap_right = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
+                //std::cout << gap_right << endl;
+            }
+
+            //for the left side
+            double gap_left = 0.0; //initialize the gap as 0.0
+            if(cars_left.size() >= 2) //if more than or equal to 2 cars are there
+            {
+                //std:: cout << "more than two cars! ";
+                vector<double> s;
+                //get the closest max 2 vehicles on the right side
+                for(int i = 0; i < cars_left.size(); i++)
+                {
+                    s.push_back(fabs(cars_left[i].s - car_s));
+                }
+                sort(s.begin(), s.end());
+                gap_left = s[0];
+            }
+            else if(cars_left.size() == 1)
+            {
+                gap_left = fabs(car_s - cars_left[0].s);
+            }
+            else //if there's no car
+            {
+                gap_left = CARS_OF_CONCERN_DISTANCE; //set the gap to large number to indicate it's good to move over
+                //std::cout << gap_left << endl;
+            }
+
+            //std::cout << "gap_left: " << gap_left << ", gap_right: " << gap_right << endl;
+            /**************** PERFORM GAP CHECKS END **********************/
 
             //path planning and state machine starts here
             if (fsm == KL)
             {
-                //just try to approach the desired velocity if no slow car is in front of me
-                if(ref_vel < DESIRED_VELOCITY)
-                {
-                    ref_vel += 0.224; //approximately 5m/s^2
-                }
-                //else do nothing and keep enjoying the straight driving, keeping ref_vel at the desired velocity
-
+                std::cout << "let's do Keep Lane!!" << endl;
                 //for all the cars of concern in front of us, if there is a car that is less than ALLOWED_DISTANCE from me and the speed is less than or equal to mine, then consider lane change
                 for(int i = 0; i < cars_mylane.size(); i++)
                 {
-                    if((cars_mylane[i].s > car_s) && ((cars_mylane[i].s - car_s) < ALLOWED_DISTANCE) && (cars_mylane[i].vel <= car_speed))
+                    if((cars_mylane[i].s > car_s) && ((cars_mylane[i].s - car_s) < ALLOWED_DISTANCE) && (cars_mylane[i].vel <= (desired_vel - 5))) //-5 as a buffer
                     {
                         //consider lane change, so either PLCL or PLCR
-                        fsm = PLCL;
-                        std::cout << "let's consider lane change!" << endl;
+                        //for PLCL: if the predicted gap on the left lane is okay AND if the predicted distance to car closest to me on the left lane is less than that to the right
+                        //for PLCR: if the predicted gap on the right lane is okay AND if the predicted distance to car closest to me on the right lane is less than that to the left
+                        //first check PLCR condition, if not default to PLCL as left lane should be usually more favorable
+                        too_close = true;
+
+                        if(((gap_right > gap_left) && (lane != 3)) || (lane == 1)) //if the gap on the right is better than the left AND i'm not on the rightmost lane, then do PLCR, or if I'm at the leftmost lane
+                        {
+                            fsm = PLCR;
+                        }
+                        else if((lane != 1) || (lane==3)) //else, do PLCL if i'm not in the leftmost lane OR if i'm at the rightmost lane
+                        {
+                            fsm = PLCL;
+                        }
+                        else
+                        {
+                            //else, do nothing, keep current state
+                        }
+                        //fsm = PLCL;
                     }
                 }
+                //just try to approach the desired velocity if no slow car is in front of me
+                if(too_close)
+                {
+                    ref_vel -= VEL_INC; //approximately 5m/s^2
+                }
+                else if(ref_vel < desired_vel) //desired_vel is dynamic based on FSM behaviour
+                {
+                    ref_vel += VEL_INC; //approximately 5m/s^2
+                }
+                //else do nothing and keep enjoying the straight driving, keeping ref_vel at the desired velocity
 
 //                //if it is, it's time to consider changing lanes
 //                if ((check_s > car_s) && ((check_s - car_s) < 30))
@@ -368,27 +468,119 @@ int main() {
 
 //                if(too_close)
 //                {
-//                    ref_vel -= 0.224; //approximately 5m/s^2
+//                    ref_vel -= VEL_INC; //approximately 5m/s^2
 //                }
             }
-
-
-            //update finite state machine to PLCL or PLCR if there's a car in front of us that's going too slow
-            //if there's a car on the left side behind me that is slower or same as the the car in its front
-            //AND the gap has enough gap
-            //AND the car on the left side behind me has almost the same velocity as me, perform LCR
-
-
-            for(int i = 0; i < cars_right.size(); i++)
+            else if (fsm == PLCL)
             {
-                //only print if the car right lane and is close to me
-                if((cars_right[i].lane == RIGHT_LANE))
+                std::cout << "let's do PLCL!! <--- left" << endl;
+                ref_vel -= VEL_INC; //approximately 5m/s^2
+
+
+                if(gap_left > SAFE_GAP_TO_CL) //condition to transition to LCL state
                 {
-                    std::cout << cars_right[i].vel*2.24 << endl;
-                    //std::cout << "my speed: " << car_speed << endl;
+                    fsm = LCL; //if there's enough gap on the right lane, perform LCR!
+                }
+
+                //go back to KL state if the following conditions are met:
+                //if the gap on the other side seems favorable OR
+                //if too much time has elapsed in this state OR (maybe later)
+                //if the car in front of us went to our desired speed OR (maybe later)
+                //if the car in front of us has given us enough space to accelerate: greater than a certain amount
+                if(((gap_right > gap_left) && (lane != 3)) || (gap_mylane > ALLOWED_DISTANCE)) //condition to transition back to KL state, must invalidate the gap_right > gap_left check when i'm in the rightmost lane, otherwise gap_right is big number
+                {
+                    fsm = KL;
+                }
+
+                //fsm = PLCL;
+
+                //update finite state machine to PLCL or PLCR if there's a car in front of us that's going too slow
+                //if there's a car on the left side behind me that is slower or same as the the car in its front
+                //AND the gap has enough gap
+                //AND the car on the left side behind me has almost the same velocity as me, perform LCR
+            }
+            else if (fsm == PLCR)
+            {
+                std::cout << "let's do PLCR ---> right" << endl;
+                //ref_vel -= VEL_INC; //approximately 5m/s^2
+
+                //just keep slowing down until the gap_right gets big enough so it's safe to go into that lane
+                ref_vel -= VEL_INC; //approximately 5m/s^2
+
+                if(gap_right > SAFE_GAP_TO_CL) //condition to transition to LCR state, try.. only change lane if there's no car of concern!
+                {
+                    fsm = LCR; //if there's enough gap on the right lane, perform LCR!
+                }
+
+                //go back to KL state if the following conditions are met:
+                //if the gap on the other side seems favorable OR
+                //if too much time has elapsed in this state OR (maybe later)
+                //if the car in front of us went to our desired speed OR (maybe later)
+                //if the car in front of us has given us enough space to accelerate: greater than a certain amount
+                if(((gap_left > gap_right) && (lane != 1)) || (gap_mylane > ALLOWED_DISTANCE)) //condition to transition back to KL state, must invalidate the gap_right < gap_left check when i'm in the leftmost lane, otherwise gap_left is big number
+                {
+                    fsm = KL;
+                }
+
+                //update finite state machine to PLCL or PLCR if there's a car in front of us that's going too slow
+                //if there's a car on the left side behind me that is slower or same as the the car in its front
+                //AND the gap has enough gap
+                //AND the car on the left side behind me has almost the same velocity as me, perform LCR
+            }
+            //#TODO: Make in-transition flags so that in the midst of lane change, another Lane change cannot happen, if this ahppens, then the car can oscillate between two lanes and stay somewhere in the middle, not desired
+            else if (fsm == LCR)
+            {
+                std::cout << "let's do LCR ---> right NOW!!" << endl;
+                //change lane to right
+                if(transition == false)
+                {
+                    transition = true;
+                    lane = lane + 1;
+                }
+
+                if(d says i'm in the lane fully,')
+                {
+                    //after completing lane change, go back to keep lane state
+                    fsm = KL;
+                    //reset transition flag
+                    transition = false;
                 }
 
             }
+            else if (fsm == LCL)
+            {
+                std::cout << "let's do LCL <--- left NOW!!" << endl;
+                lane = lane - 1;
+                //after initiating/completing lane change, go back to keep lane state
+                fsm = KL;
+            }
+
+
+
+
+//
+//            for(int i = 0; i < cars_right.size(); i++)
+//            {
+//                //only print if the car right lane and is close to me
+//                if((cars_right[i].lane == RIGHT_LANE))
+//                {
+//                    std::cout << cars_right[i].vel*2.24 << endl;
+//                    //std::cout << "my speed: " << car_speed << endl;
+//                }
+//            }
+//            for(int i = 0; i < cars_right.size(); i++)
+//            {
+//                //only print if the car right lane and is close to me
+//                if((cars_right[i].lane == RIGHT_LANE))
+//                {
+//                    std::cout << cars_right[i].vel*2.24 << endl;
+//                    //std::cout << "my speed: " << car_speed << endl;
+//                }
+//            }
+//            for(int i = 0; i < cars_mylane.size(); i++)
+//            {
+//                std::cout << cars_mylane[i].vel*2.24 << endl;
+//            }
 
 
             //from here, the following code is for drawing trajectories

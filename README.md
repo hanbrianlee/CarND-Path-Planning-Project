@@ -60,6 +60,23 @@ the path has processed since last time.
 
 2. There will be some latency between the simulator running and the path planner returning a path, with optimized code usually its not very long maybe just 1-3 time steps. During this delay the simulator will continue using points that it was last given, because of this its a good idea to store the last points you have used so you can have a smooth transition. previous_path_x, and previous_path_y can be helpful for this transition since they show the last points given to the simulator controller with the processed points already removed. You would either return a path that extends this previous path or make sure to create a new path that has a smooth transition with this last path.
 
+### My Implementation:
+
+My implementation can be broken down into three parts. In the three parts, the lane assignment is done and for the trajectory generation, I used the same implementation with splines that makes use of previous path points for smooth trajectory generation. Speed increments/decrements for each frame were chosen so that the maximum jerk and total accerlation limits are not violated.
+
+I chose to have all my codes in main.cpp so it's easier to read and debug, as the contents were not too long.
+
+## Assignment of detected cars for the left lane, current lane, right lane (line 280~323)
+
+I first created a struct car to store left, current, and right lane cars separately. I checked if the absolute distance to each car is near my car before assigning lanes to the cars, as cars too far away from the ego vehicle are not needed for behaviour planning. I used the velocity of each car multiplied by 0.02s(each frame time) * number of previous path sizes to get more accurate s position of each vehicle. This in effect is a prediction of a few frames from the past into the current frame considering the delay of information transfer from the simulator. But this prediction is not the prediction of what each car will do for the future, this is something that I will work on later when I find time.
+
+## Extraction of various vehicle speed, distance, gap information from the detected cars
+
+
+## Finite state machine for behavior planning
+
+I chose to use the Finite State Machine introduced as part of the behaviour planning lesson. I chose to have KL, PLCL, PLCR, LCL, and LCR states. The codes that
+
 ## Tips
 
 A really helpful resource for doing this project and creating smooth trajectories was using http://kluge.in-chemnitz.de/opensource/spline/, the spline function is in a single hearder file is really easy to use.

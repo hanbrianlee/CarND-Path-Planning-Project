@@ -60,22 +60,29 @@ the path has processed since last time.
 
 2. There will be some latency between the simulator running and the path planner returning a path, with optimized code usually its not very long maybe just 1-3 time steps. During this delay the simulator will continue using points that it was last given, because of this its a good idea to store the last points you have used so you can have a smooth transition. previous_path_x, and previous_path_y can be helpful for this transition since they show the last points given to the simulator controller with the processed points already removed. You would either return a path that extends this previous path or make sure to create a new path that has a smooth transition with this last path.
 
-### My Implementation:
+## My Implementation:
 
 My implementation can be broken down into three parts. In the three parts, the lane assignment is done and for the trajectory generation, I used the same implementation with splines that makes use of previous path points for smooth trajectory generation. Speed increments/decrements for each frame were chosen so that the maximum jerk and total accerlation limits are not violated.
 
 I chose to have all my codes in main.cpp so it's easier to read and debug, as the contents were not too long.
 
-## Assignment of detected cars for the left lane, current lane, right lane (line 280~323)
+### Assignment of detected cars for the left lane, current lane, right lane (lines 280~323)
 
 I first created a struct car to store left, current, and right lane cars separately. I checked if the absolute distance to each car is near my car before assigning lanes to the cars, as cars too far away from the ego vehicle are not needed for behaviour planning. I used the velocity of each car multiplied by 0.02s(each frame time) * number of previous path sizes to get more accurate s position of each vehicle. This in effect is a prediction of a few frames from the past into the current frame considering the delay of information transfer from the simulator. But this prediction is not the prediction of what each car will do for the future, this is something that I will work on later when I find time.
 
-## Extraction of various vehicle speed, distance, gap information from the detected cars
+For the s value, I used the predicted s value of each car and subtracted the ego-car's s value so the difference in s for each car in each lane was stored in the struct.
 
+### Extraction of various vehicle speed, distance, gap information from the detected cars (lines 326~399)
 
-## Finite state machine for behavior planning
+Then I sorted the lane assigned left,current, and right lanes cars based on their distance to figure out the speed of the very first front car (if exists) in my lane, in my right lane, and my left lane. The same was done for the very first car behind me (if exists) for the three lanes. Of course, if the ego car is located on the very left lane, there will be no lane assigned cars for the left side, so nothing will be updated --- similar for the very right lane. Initial values were chosen so that the ego-car can change lanes when needed. (i.e. all the vehicle speeds in the front are assigned as the desired speed of 49.5mph unless a car is detected that has less speed than that. This helps in the PLCL or PLCR finite states, which will be described below, so that the transition to LCL and LCR can happen if the speed of the car in the front for the lane I'm trying to change into is at least as fast as my current speed.)
 
-I chose to use the Finite State Machine introduced as part of the behaviour planning lesson. I chose to have KL, PLCL, PLCR, LCL, and LCR states. The codes that
+The gap for the left and right lane was basically the smallest s value in the detected cars, respectively for the left and the right lane. For the current lane, I didn't consider the car behind me but only for the car in front of me, and I stored the distance to the very first car in front of me, if it exists. If there were no cars in front of the ego-car, then I intialized the gap_mylane to the ALLOWED_DISTANCE, so that the PLCL or PLCR transitions won't happen, and the car will just try to speed up until the desired speed of 49.5mph is reached.
+
+### Finite state machine for behavior planning (lines 402 ~ 548)
+
+I chose to use the Finite State Machine introduced as part of the behaviour planning lesson. I chose to have KL, PLCL, PLCR, LCL, and LCR states. The reason I chose the FSM is that it's easy to plan logics that can be robust, as there are so many cases and corner cases to consider if FSM is not used, and it will take a long time to figure out all the detailed conditions that will be fail-proof. 
+
+The FSM is initialized with the KL = Keep Lane state, and it keeps this state unless there's a car in front that is at least 5m/s (which is 5*2.24 mph for the simulator) slower than me and is within ALLOWED_DISTANCE of 25m. If this condition is met, then transition to PLCL (Plan Lane Change Left) and PLCR (Plan Lane Change Right) will be considered. First the 
 
 ## Tips
 
